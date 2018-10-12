@@ -6,14 +6,15 @@
 """
 
 import random
-from posix.time cimport clock_gettime, timespec, CLOCK_REALTIME
+import math
+#from posix.time cimport clock_gettime, timespec, CLOCK_REALTIME
 
 """"
     Global Variables
 """
-point_list = []
-cdef timespec ts
-cdef double current
+point_list = []             #list of points
+#cdef timespec ts
+#cdef double current
 
 class point:
     """
@@ -31,10 +32,43 @@ class point:
                 return True
         return False
 
+    def getDistance(self, second_point):
+        x1 = self.x_axis
+        y1 = self.y_axis
+        x2 = second_point.x_axis
+        y2 = second_point.y_axis
+        print("{}-{}, {}-{}".format(x2,x1,y2,y1))
+        return math.hypot (x2-x1, y2-y1)
+
+
+def findShortestDistance():
+    """
+        traverse list of points and find shortest distance.
+        find shortest distance by brute force, compare all points and calculate distance.
+    """
+    outer_index = 0
+    inner_index = 0
+    shortest_distance = 0
+    for outer_index in range (0, len(point_list)):
+        for inner_index in range ((outer_index+1), len(point_list)):
+            """calculate distance"""
+            #print ( point_list[outer_index].getDistance(point_list[inner_index]) )
+            if outer_index == 0: #if first comparation, assume shortest
+                shortest_distance = point_list[outer_index].getDistance(point_list[inner_index])
+                #print ("shortest distance: {}".format(shortest_distance))
+            else:
+                if shortest_distance > point_list[outer_index].getDistance(point_list[inner_index]):
+                    shortest_distance = point_list[outer_index].getDistance(point_list[inner_index])
+                    #print ("shortest distance: {}".format(shortest_distance))
+
+    print ("shortest distance: {}".format(shortest_distance))
+
+
+
 
 def removeDuplicates():
     """
-        traverse the list of points and remove duplicates points.
+        traverse the list of points and remove duplicates.
     """
     outer_index = 0
     inner_index = 0
@@ -43,7 +77,7 @@ def removeDuplicates():
     for outer_index in range (0, len(point_list)):
         for inner_index in range ((outer_index+1), len(point_list)):
             if point_list[outer_index] == point_list[inner_index]:
-                dup_point.append(point_list[inner_index])
+                dup_point.append(point_list[outer_index])
 
     """remove duplicates"""
     for duplicate in dup_point:
@@ -88,8 +122,10 @@ def main():
         removeDuplicates()
         showList()
 
-        clock_gettime(CLOCK_REALTIME, &ts)
-        current = ts.tv_sec + (ts.tv_nsec / 1000000000.)
-        print (current)
-
         #set up complete start analysis
+        #TODO add Time
+        # clock_gettime(CLOCK_REALTIME, &ts)
+        # current = ts.tv_sec + (ts.tv_nsec / 1000000000.)
+        # print (current)
+
+        findShortestDistance()
