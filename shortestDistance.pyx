@@ -7,6 +7,7 @@
 
 import random
 import math
+import time
 #from posix.time cimport clock_gettime, timespec, CLOCK_REALTIME
 
 """"
@@ -37,9 +38,8 @@ class point:
         y1 = self.y_axis
         x2 = second_point.x_axis
         y2 = second_point.y_axis
-        print("{}-{}, {}-{}".format(x2,x1,y2,y1))
+        #print("{}-{}, {}-{}".format(x2,x1,y2,y1))
         return math.hypot (x2-x1, y2-y1)
-
 
 def findShortestDistance():
     """
@@ -59,12 +59,7 @@ def findShortestDistance():
             else:
                 if shortest_distance > point_list[outer_index].getDistance(point_list[inner_index]):
                     shortest_distance = point_list[outer_index].getDistance(point_list[inner_index])
-                    #print ("shortest distance: {}".format(shortest_distance))
-
-    print ("shortest distance: {}".format(shortest_distance))
-
-
-
+                    print ("shortest distance: {}".format(shortest_distance))
 
 def removeDuplicates():
     """
@@ -81,8 +76,11 @@ def removeDuplicates():
 
     """remove duplicates"""
     for duplicate in dup_point:
-        #print ("duplicate point: {}".format(duplicate))
-        point_list.remove(duplicate)
+        try:
+            #print ("duplicate point: {}".format(duplicate))
+            point_list.remove(duplicate)
+        except BaseException:
+            pass
 
 def showList():
     for point in point_list:
@@ -109,23 +107,32 @@ def main():
         The Algorithm will have 100 iterations with a random number of points on each iteration.
             10 > points_count < 1000
     """
-    for iteration in range (0, 1):
-        points_count = random.randrange(10, 20)
+
+    """Open file"""
+    out_filename = "data.txt"
+    file = open(out_filename, "w")
+
+    for iteration in range (0, 200):
+        points_count = random.randrange(100, 5000)
         print ("Creating {} random points".format(points_count))
+
         #create random points
         createRandomPoint(points_count)
-        # point_list.append(point(x_axis=5, y_axis=5))
-        # point_list.append(point(x_axis=5, y_axis=5))
-        # point_list.insert(4, point(x_axis=9, y_axis=9))
-        # point_list.insert(6, point(x_axis=9, y_axis=9))
+
         #check for duplicates
         removeDuplicates()
-        showList()
+        #showList()
 
         #set up complete start analysis
-        #TODO add Time
-        # clock_gettime(CLOCK_REALTIME, &ts)
-        # current = ts.tv_sec + (ts.tv_nsec / 1000000000.)
-        # print (current)
-
+        start_time = time.time()
         findShortestDistance()
+        end_time = time.time()
+
+        total_time = end_time-start_time
+
+        print ("Found in {} ticks\n".format(total_time))
+        #write results to output
+        line = str(points_count) + "," + str(total_time) + "\n"
+        file.write(line)
+
+    file.close()
