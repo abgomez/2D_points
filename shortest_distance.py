@@ -132,6 +132,29 @@ def create_graph(graph_type):
     plt.grid(True)
     plt.show()
 
+def get_constants():
+    results = []
+    constants = np.array([1, 1, 1])
+    aux = 0
+    #open file and read line
+    in_filename = "results.txt"
+    file = open(in_filename, "r")
+    for line in csv.reader(file):
+        result = []
+        #results.append(int(line[0]))
+        result.append(float(line[0]))
+        result.append(float(line[1]))
+        results.append(result)
+        aux += 1
+        if aux == 3:
+            break
+    file.close()
+    results = np.array(results)
+
+    print ("results: {}".format(results))
+    print ("vector {}".format(constants))
+    print ("Ax=b {}".format(constants.dot(results)))
+
 ### Main Logic ###
 if __name__ == "__main__":
     for run in range(2, 200): #arbitray values
@@ -182,5 +205,7 @@ if __name__ == "__main__":
         print("Shortest Distance: {}".format(SHORTEST_DISTANCE))
         print("Found in: {}".format(TOTAL_TIME))
 
+    #calculate constants
+    get_constants()
     #plot data
     create_graph(graph)
