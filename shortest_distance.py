@@ -47,7 +47,7 @@ def divide_and_conquer(points_x, points_y, points_count):
     shortest_distance = 0
 
     #if number of points is low enough, run a brute force algorithm
-    if points_count <= 20: #arbitrary value
+    if points_count <= 200: #arbitrary value
         return brute_force(points_x, points_count)
 
     #implement divide and coquer, find middle point of axis_x array
@@ -157,7 +157,7 @@ def get_constants():
 
 ### Main Logic ###
 if __name__ == "__main__":
-    for run in range(2, 200): #arbitray values
+    for run in range(2, 1000): #arbitray values
         print("-----------------------------------------------------------------------------------")
         #Create a random set of points
         random.seed(19680801) #set to reproducibility
@@ -171,8 +171,7 @@ if __name__ == "__main__":
         print("Number of points: {}".format(POINTS_COUNT))
         print("Array of points: {}".format(POINTS))
 
-        #set up complete start analysis
-        START_TIME = time.time()
+
 
         brute = 0
         graph = 0
@@ -188,17 +187,25 @@ if __name__ == "__main__":
         print("Points sorted by X: {}".format(POINTS_X))
 
         if brute == 1:
+            #set up complete start analysis
+            START_TIME = time.time()
             SHORTEST_DISTANCE = brute_force(POINTS_X, POINTS_COUNT)
+            #stop timer
+            END_TIME = time.time()
+            TOTAL_TIME = END_TIME-START_TIME
         else:
             POINTS_Y = np.sort(POINTS, kind='stable', order='axis_y')
             print("Points sorted by Y: {}".format(POINTS_Y))
 
+            #set up complete start analysis
+            START_TIME = time.time()
             #find closest pair
             SHORTEST_DISTANCE = divide_and_conquer(POINTS_X, POINTS_Y, POINTS_COUNT)
+            #stop timer
+            END_TIME = time.time()
+            TOTAL_TIME = END_TIME-START_TIME
 
-        #stop timer
-        END_TIME = time.time()
-        TOTAL_TIME = END_TIME-START_TIME
+
 
         #save results
         save_results(POINTS_COUNT, TOTAL_TIME)
